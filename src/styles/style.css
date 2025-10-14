@@ -1,1 +1,5 @@
-
+.welcome-message {
+  background-color: lightgray;
+  padding: 25px;
+  border-radius: 50px;
+}
