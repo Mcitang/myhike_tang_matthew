@@ -18,6 +18,9 @@ import {
   signOut,
 } from "firebase/auth";
 
+// Firestore import
+import { db } from "/src/firebaseConfig.js";
+import { doc, setDoc } from "firebase/firestore";
 // -------------------------------------------------------------
 // loginUser(email, password)
 // -------------------------------------------------------------
@@ -51,9 +54,27 @@ export async function loginUser(email, password) {
 //   const user = await signupUser("Alice", "alice@email.com", "secret");
 // -------------------------------------------------------------
 export async function signupUser(name, email, password) {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  await updateProfile(userCredential.user, { displayName: name });
-  return userCredential.user;
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  const user = userCredential.user; // Get the user object
+  await updateProfile(user, { displayName: name });
+
+  try {
+    await setDoc(doc(db, "users", user.uid), {
+      name: name,
+      email: email,
+      country: "Canada", // Default value
+      school: "BCIT", // Default value
+    });
+    console.log("Firestore user document created successfully!");
+  } catch (error) {
+    console.error("Error creating user document in Firestore:", error);
+  }
+
+  return user;
 }
 
 // -------------------------------------------------------------
@@ -90,7 +111,9 @@ export function checkAuthState() {
     if (window.location.pathname.endsWith("main.html")) {
       if (user) {
         const displayName = user.displayName || user.email;
-        $("#welcomeMessage").text(`Hello, ${displayName}!`);
+        $("#welcomeMessage").text(
+          `You are signed in forever now, ${displayName}!`
+        );
       } else {
         window.location.href = "index.html";
       }
@@ -130,4 +153,3 @@ export function authErrorMessage(error) {
 
   return map[code] || "Something went wrong. Please try again.";
 }
-
