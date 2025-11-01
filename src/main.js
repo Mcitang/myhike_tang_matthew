@@ -83,7 +83,6 @@ async function seedHikes() {
     console.log("Hikes collection already contains data. Skipping seed.");
   }
 }
-
 // Call the seeding function when the main.html page loads.
 seedHikes();
 
@@ -104,6 +103,10 @@ async function displayCardsDynamically() {
         hike.details || `Located in ${hike.city}.`;
       newcard.querySelector(".card-length").textContent = hike.length;
 
+      newcard.querySelector(".card-image").src = `./images/${hike.code}.jpg`;
+      newcard.querySelector(
+        ".read-more"
+      ).href = `eachHike.html?docID=${doc.id}`;
       // Attach the new card to the container
       document.getElementById("hikes-go-here").appendChild(newcard);
     });
