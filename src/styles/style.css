@@ -16,3 +16,7 @@
   border-color: blueviolet;
   border: radius 50px;
 }
+
+.material-icons {
+  cursor: pointer;
+}
